@@ -18,6 +18,11 @@ app.MapOpalTools();
 // Start the app
 app.Run();
 
+public class SeoCheckerParameters
+{
+    public string Url { get; set; }
+}
+
 // Tool implementations
 public class SeoCheckerTool
 {
@@ -25,26 +30,26 @@ public class SeoCheckerTool
 
     [OpalTool(Name = "seochecker")]
     [Description("Checks a url for SEO statistics")]
-    public async Task<object> Check(string url)
+    public async Task<object> Check(SeoCheckerParameters parameters)
     {
         try
         {
             // Validate URL
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) ||
+            if (!Uri.TryCreate(parameters.Url, UriKind.Absolute, out var uri) ||
                 (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 return new { error = "Invalid URL format. Please provide a valid HTTP or HTTPS URL." };
             }
 
             // Fetch the webpage content
-            var response = await _httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(parameters.Url);
             response.EnsureSuccessStatusCode();
             var html = await response.Content.ReadAsStringAsync();
 
             // Analyze SEO metrics
             var seoMetrics = new
             {
-                url = url,
+                url = parameters.Url,
                 statusCode = (int)response.StatusCode,
                 title = ExtractTitle(html),
                 metaDescription = ExtractMetaDescription(html),
