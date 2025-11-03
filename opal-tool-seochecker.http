@@ -1,0 +1,6 @@
+@opal_tool_seochecker_HostAddress = http://localhost:5114
+
+GET {{opal_tool_seochecker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
